@@ -1,6 +1,6 @@
 <?php
-require 'db.php';
-require 'session_start.php';
+require 'session_start.php';  // Démarre une session si elle n'est pas déjà démarrée
+require 'db.php';             // Connexion à la base de données
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -49,11 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="card shadow">
                 <div class="card-body">
                     <h3 class="text-center mb-4">Connexion</h3>
-                    
+
                     <?php if (isset($error)): ?>
                         <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
                     <?php endif; ?>
-                    
+
                     <form method="post" action="login.php">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email :</label>
