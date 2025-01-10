@@ -68,6 +68,11 @@ resource "docker_container" "mysql_db" {
     name = docker_network.shared_network.name
   }
 
+  volumes {
+    host_path      = "/path/to/mysql/data" # Données persistantes
+    container_path = "/var/lib/mysql"
+  }
+
   lifecycle {
     ignore_changes = [image, env]
   }
@@ -107,7 +112,6 @@ resource "docker_container" "phpmyadmin" {
   }
 }
 
-
 # Image Grafana
 resource "docker_image" "grafana_image" {
   name         = "grafana/grafana:latest"
@@ -136,5 +140,36 @@ resource "docker_container" "grafana" {
 
   lifecycle {
     ignore_changes = [image, env]
+  }
+}
+
+
+# Nouveau Conteneur PHP avec Apache pour un autre module
+resource "docker_container" "php_web_module2" {
+  name  = "php-web-container-Info"
+  image = docker_image.php_apache.name
+
+  ports {
+    internal = 80
+    external = 8082
+  }
+
+  volumes {
+    host_path      = "C:/xampp/htdocs/bibli/Biblio/Info"
+    container_path = "/var/www/html"
+  }
+
+  networks_advanced {
+    name = docker_network.shared_network.name
+  }
+
+  command = [
+    "bash",
+    "-c",
+    "apt-get update && apt-get install -y libmariadb-dev && docker-php-ext-install pdo pdo_mysql && apache2-foreground"
+  ]
+
+  lifecycle {
+    ignore_changes = [image, volumes]
   }
 }
